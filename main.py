@@ -7,13 +7,28 @@ def get_atc_info(member_id):
     payload = {}
     headers = {'Accept': 'application/json'}
     response = requests.get(url, headers=headers, data=payload)
-    return response.text
+    return response.json()
+
+def format_atc_info(atc_data):
+    formatted_info = ""
+    if "items" in atc_data:
+        for item in atc_data["items"]:
+            formatted_info += f"Connection ID: {item['connection_id']['id']}\n"
+            formatted_info += f"Callsign: {item['connection_id']['callsign']}\n"
+            formatted_info += f"Start: {item['connection_id']['start']}\n"
+            formatted_info += f"End: {item['connection_id']['end']}\n"
+            formatted_info += "--------------------------\n"
+    else:
+        formatted_info = "No ATC information found."
+
+    return formatted_info
 
 def show_atc_info():
     member_id = member_id_entry.get()
     atc_info = get_atc_info(member_id)
+    formatted_info = format_atc_info(atc_info)
     output_text.delete(1.0, tk.END)  # Clear previous text
-    output_text.insert(tk.END, atc_info)
+    output_text.insert(tk.END, formatted_info)
 
 # Create the main window
 window = tk.Tk()
@@ -30,7 +45,7 @@ fetch_button = tk.Button(window, text="Fetch ATC Info", command=show_atc_info)
 fetch_button.pack(pady=10)
 
 # Create a scrolled text widget to display the output
-output_text = scrolledtext.ScrolledText(window, width=50, height=20)
+output_text = scrolledtext.ScrolledText(window, width=80, height=20)
 output_text.pack(padx=10, pady=10)
 
 # Run the Tkinter event loop
