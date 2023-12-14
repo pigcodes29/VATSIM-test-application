@@ -1,6 +1,7 @@
 import requests
 import tkinter as tk
 from tkinter import scrolledtext
+from PIL import Image, ImageTk
 
 def get_atc_info(member_id):
     url = f"https://api.vatsim.net/v2/members/{member_id}/atc"
@@ -33,6 +34,20 @@ def show_atc_info():
 # Create the main window
 window = tk.Tk()
 window.title("VATSIM ATC Info")
+
+# Load the image using Pillow and convert it to PhotoImage
+img = Image.open("bdl.jpg")
+
+# Resize the image to a smaller size while maintaining the aspect ratio
+max_size = (100, 100)
+img.thumbnail(max_size)
+
+img = ImageTk.PhotoImage(img)
+
+img_label = tk.Label(window, image=img)
+
+# Place the image in the top right corner
+img_label.place(relx=1, x=-10, rely=0, y=10, anchor="ne")
 
 # Create an entry widget for the member ID
 member_id_label = tk.Label(window, text="Member ID:")
